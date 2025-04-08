@@ -1,27 +1,33 @@
+// 自动更新模块，负责处理应用程序的自动更新
 import { autoUpdater } from "electron-updater"
 import { BrowserWindow, ipcMain, app } from "electron"
 import log from "electron-log"
 
+// 初始化自动更新器
 export function initAutoUpdater() {
   console.log("Initializing auto-updater...")
 
+  // 在开发环境中跳过更新检查
   // Skip update checks in development
   if (!app.isPackaged) {
     console.log("Skipping auto-updater in development mode")
     return
   }
 
+  // 检查GitHub令牌是否设置
   if (!process.env.GH_TOKEN) {
     console.error("GH_TOKEN environment variable is not set")
     return
   }
 
+  // 配置自动更新器
   // Configure auto updater
   autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
   autoUpdater.allowDowngrade = true
   autoUpdater.allowPrerelease = true
 
+  // 启用更详细的日志记录
   // Enable more verbose logging
   autoUpdater.logger = log
   log.transports.file.level = "debug"
@@ -30,6 +36,7 @@ export function initAutoUpdater() {
     log.transports.file.level
   )
 
+  // 记录所有更新事件
   // Log all update events
   autoUpdater.on("checking-for-update", () => {
     console.log("Checking for updates...")
@@ -37,6 +44,7 @@ export function initAutoUpdater() {
 
   autoUpdater.on("update-available", (info) => {
     console.log("Update available:", info)
+    // 通知渲染进程有关可用更新
     // Notify renderer process about available update
     BrowserWindow.getAllWindows().forEach((window) => {
       console.log("Sending update-available to window")

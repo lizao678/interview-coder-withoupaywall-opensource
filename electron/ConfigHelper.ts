@@ -1,3 +1,4 @@
+// 配置助手模块，负责处理应用程序配置
 // ConfigHelper.ts
 import fs from "node:fs"
 import path from "node:path"
@@ -5,9 +6,10 @@ import { app } from "electron"
 import { EventEmitter } from "events"
 import { OpenAI } from "openai"
 
+// 配置接口定义
 interface Config {
   apiKey: string;
-  apiProvider: "openai" | "gemini"; // Added provider selection
+  apiProvider: "openai" | "gemini"; // 添加提供商选择
   extractionModel: string;
   solutionModel: string;
   debuggingModel: string;
@@ -15,21 +17,25 @@ interface Config {
   opacity: number;
 }
 
+// 配置助手类，继承自EventEmitter
 export class ConfigHelper extends EventEmitter {
+  // 配置文件路径
   private configPath: string;
+  // 默认配置
   private defaultConfig: Config = {
     apiKey: "",
-    apiProvider: "gemini", // Default to Gemini
-    extractionModel: "gemini-2.0-flash", // Default to Flash for faster responses
+    apiProvider: "gemini", // 默认为Gemini
+    extractionModel: "gemini-2.0-flash", // 默认为Flash以获得更快的响应
     solutionModel: "gemini-2.0-flash",
     debuggingModel: "gemini-2.0-flash",
     language: "python",
     opacity: 1.0
   };
 
+  // 构造函数
   constructor() {
     super();
-    // Use the app's user data directory to store the config
+    // 使用应用程序的用户数据目录存储配置
     try {
       this.configPath = path.join(app.getPath('userData'), 'config.json');
       console.log('Config path:', this.configPath);
@@ -38,11 +44,12 @@ export class ConfigHelper extends EventEmitter {
       this.configPath = path.join(process.cwd(), 'config.json');
     }
     
-    // Ensure the initial config file exists
+    // 确保初始配置文件存在
     this.ensureConfigExists();
   }
 
   /**
+   * 确保配置文件存在
    * Ensure config file exists
    */
   private ensureConfigExists(): void {

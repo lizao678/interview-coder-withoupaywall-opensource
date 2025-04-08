@@ -1,3 +1,4 @@
+// 处理助手模块，负责处理截图和AI请求
 // ProcessingHelper.ts
 import fs from "node:fs"
 import path from "node:path"
@@ -8,6 +9,7 @@ import { app, BrowserWindow, dialog } from "electron"
 import { OpenAI } from "openai"
 import { configHelper } from "./ConfigHelper"
 
+// Gemini API请求的接口定义
 // Interface for Gemini API requests
 interface GeminiMessage {
   role: string;
@@ -20,6 +22,8 @@ interface GeminiMessage {
   }>;
 }
 
+// Gemini API响应的接口定义
+// Interface for Gemini API responses
 interface GeminiResponse {
   candidates: Array<{
     content: {
@@ -31,20 +35,30 @@ interface GeminiResponse {
   }>;
 }
 
+// 处理助手类，负责处理截图和AI请求
+// ProcessingHelper class
 export class ProcessingHelper {
+  // 依赖项
   private deps: IProcessingHelperDeps
+  // 截图助手
   private screenshotHelper: ScreenshotHelper
+  // OpenAI客户端
   private openaiClient: OpenAI | null = null
+  // Gemini API密钥
   private geminiApiKey: string | null = null
 
+  // API请求的中止控制器
   // AbortControllers for API requests
   private currentProcessingAbortController: AbortController | null = null
   private currentExtraProcessingAbortController: AbortController | null = null
 
+  // 构造函数
+  // Constructor
   constructor(deps: IProcessingHelperDeps) {
     this.deps = deps
     this.screenshotHelper = deps.getScreenshotHelper()
     
+    // 根据配置初始化AI客户端
     // Initialize AI client based on config
     this.initializeAIClient();
     

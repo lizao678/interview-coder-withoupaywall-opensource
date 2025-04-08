@@ -1,3 +1,4 @@
+// 截图助手模块，负责处理屏幕截图
 // ScreenshotHelper.ts
 
 import path from "node:path"
@@ -9,22 +10,33 @@ import { promisify } from "util"
 import screenshot from "screenshot-desktop"
 import os from "os"
 
+// 将execFile转换为Promise形式
 const execFileAsync = promisify(execFile)
 
+// 截图助手类
 export class ScreenshotHelper {
+  // 截图队列
   private screenshotQueue: string[] = []
+  // 额外截图队列
   private extraScreenshotQueue: string[] = []
+  // 最大截图数量
   private readonly MAX_SCREENSHOTS = 5
 
+  // 截图目录
   private readonly screenshotDir: string
+  // 额外截图目录
   private readonly extraScreenshotDir: string
+  // 临时目录
   private readonly tempDir: string
 
+  // 当前视图
   private view: "queue" | "solutions" | "debug" = "queue"
 
+  // 构造函数
   constructor(view: "queue" | "solutions" | "debug" = "queue") {
     this.view = view
 
+    // 初始化目录
     // Initialize directories
     this.screenshotDir = path.join(app.getPath("userData"), "screenshots")
     this.extraScreenshotDir = path.join(
@@ -33,13 +45,16 @@ export class ScreenshotHelper {
     )
     this.tempDir = path.join(app.getPath("temp"), "interview-coder-screenshots")
 
+    // 确保目录存在
     // Create directories if they don't exist
     this.ensureDirectoriesExist();
     
+    // 启动应用时清理现有截图目录
     // Clean existing screenshot directories when starting the app
     this.cleanScreenshotDirectories();
   }
   
+  // 确保目录存在
   private ensureDirectoriesExist(): void {
     const directories = [this.screenshotDir, this.extraScreenshotDir, this.tempDir];
     

@@ -1,14 +1,18 @@
+// 预加载脚本启动
 console.log("Preload script starting...")
 import { contextBridge, ipcRenderer } from "electron"
 const { shell } = require("electron")
 
+// 处理事件常量定义
 export const PROCESSING_EVENTS = {
+  // 全局状态
   //global states
   UNAUTHORIZED: "procesing-unauthorized",
   NO_SCREENSHOTS: "processing-no-screenshots",
   OUT_OF_CREDITS: "out-of-credits",
   API_KEY_INVALID: "api-key-invalid",
 
+  // 生成初始解决方案的状态
   //states for generating the initial solution
   INITIAL_START: "initial-start",
   PROBLEM_EXTRACTED: "problem-extracted",
@@ -16,16 +20,20 @@ export const PROCESSING_EVENTS = {
   INITIAL_SOLUTION_ERROR: "solution-error",
   RESET: "reset",
 
+  // 处理调试的状态
   //states for processing the debugging
   DEBUG_START: "debug-start",
   DEBUG_SUCCESS: "debug-success",
   DEBUG_ERROR: "debug-error"
 } as const
 
+// 在文件顶部
 // At the top of the file
 console.log("Preload script is running")
 
+// 定义Electron API接口
 const electronAPI = {
+  // 原始方法
   // Original methods
   openSubscriptionPortal: async (authData: { id: string; email: string }) => {
     return ipcRenderer.invoke("open-subscription-portal", authData)

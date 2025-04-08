@@ -1,3 +1,4 @@
+// IPC处理器模块，负责处理主进程和渲染进程之间的通信
 // ipcHandlers.ts
 
 import { ipcMain, shell, dialog } from "electron"
@@ -5,9 +6,11 @@ import { randomBytes } from "crypto"
 import { IIpcHandlerDeps } from "./main"
 import { configHelper } from "./ConfigHelper"
 
+// 初始化IPC处理器
 export function initializeIpcHandlers(deps: IIpcHandlerDeps): void {
   console.log("Initializing IPC handlers")
 
+  // 配置处理器
   // Configuration handlers
   ipcMain.handle("get-config", () => {
     return configHelper.loadConfig();
@@ -22,6 +25,7 @@ export function initializeIpcHandlers(deps: IIpcHandlerDeps): void {
   })
   
   ipcMain.handle("validate-api-key", async (_event, apiKey) => {
+    // 首先检查格式
     // First check the format
     if (!configHelper.isValidApiKeyFormat(apiKey)) {
       return { 
@@ -30,17 +34,20 @@ export function initializeIpcHandlers(deps: IIpcHandlerDeps): void {
       };
     }
     
+    // 然后使用OpenAI测试API密钥
     // Then test the API key with OpenAI
     const result = await configHelper.testApiKey(apiKey);
     return result;
   })
 
+  // 积分处理器
   // Credits handlers
   ipcMain.handle("set-initial-credits", async (_event, credits: number) => {
     const mainWindow = deps.getMainWindow()
     if (!mainWindow) return
 
     try {
+      // 以确保原子性的方式设置积分
       // Set the credits in a way that ensures atomicity
       await mainWindow.webContents.executeJavaScript(
         `window.__CREDITS__ = ${credits}`

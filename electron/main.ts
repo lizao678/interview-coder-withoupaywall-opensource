@@ -9,11 +9,14 @@ import { initAutoUpdater } from "./autoUpdater"
 import { configHelper } from "./ConfigHelper"
 import * as dotenv from "dotenv"
 
+// 常量定义
 // Constants
 const isDev = process.env.NODE_ENV === "development"
 
+// 应用程序状态
 // Application State
 const state = {
+  // 窗口管理属性
   // Window management properties
   mainWindow: null as BrowserWindow | null,
   isWindowVisible: false,
@@ -25,16 +28,19 @@ const state = {
   currentX: 0,
   currentY: 0,
 
+  // 应用程序助手
   // Application helpers
   screenshotHelper: null as ScreenshotHelper | null,
   shortcutsHelper: null as ShortcutsHelper | null,
   processingHelper: null as ProcessingHelper | null,
 
+  // 视图和状态管理
   // View and state management
   view: "queue" as "queue" | "solutions" | "debug",
   problemInfo: null as any,
   hasDebugged: false,
 
+  // 处理事件
   // Processing events
   PROCESSING_EVENTS: {
     UNAUTHORIZED: "processing-unauthorized",

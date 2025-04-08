@@ -16,6 +16,7 @@ import { ToastContext } from "./contexts/toast"
 import { WelcomeScreen } from "./components/WelcomeScreen"
 import { SettingsDialog } from "./components/Settings/SettingsDialog"
 
+// 创建一个React Query客户端
 // Create a React Query client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,21 +32,30 @@ const queryClient = new QueryClient({
   }
 })
 
+// 根组件，提供QueryClient
 // Root component that provides the QueryClient
 function App() {
+  // 定义toast状态，用于显示通知
   const [toastState, setToastState] = useState({
     open: false,
     title: "",
     description: "",
     variant: "neutral" as "neutral" | "success" | "error"
   })
+  // 设置无限积分
   const [credits, setCredits] = useState<number>(999) // Unlimited credits
+  // 设置当前编程语言，默认为Python
   const [currentLanguage, setCurrentLanguage] = useState<string>("python")
+  // 应用是否已初始化
   const [isInitialized, setIsInitialized] = useState(false)
+  // 是否已设置API密钥
   const [hasApiKey, setHasApiKey] = useState(false)
+  // API密钥对话框是否打开
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false)
+  // 注意：模型选择现在通过单独的提取/解决方案/调试模型设置处理
   // Note: Model selection is now handled via separate extraction/solution/debugging model settings
 
+  // 设置对话框是否打开
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   // Set unlimited credits

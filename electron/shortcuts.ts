@@ -2,13 +2,17 @@ import { globalShortcut, app } from "electron"
 import { IShortcutsHelperDeps } from "./main"
 import { configHelper } from "./ConfigHelper"
 
+// 快捷键助手模块，负责处理全局快捷键
 export class ShortcutsHelper {
+  // 依赖项
   private deps: IShortcutsHelperDeps
 
+  // 构造函数
   constructor(deps: IShortcutsHelperDeps) {
     this.deps = deps
   }
 
+  // 调整窗口不透明度
   private adjustOpacity(delta: number): void {
     const mainWindow = this.deps.getMainWindow();
     if (!mainWindow) return;
@@ -19,6 +23,7 @@ export class ShortcutsHelper {
     
     mainWindow.setOpacity(newOpacity);
     
+    // 将不透明度设置保存到配置中，不重新初始化客户端
     // Save the opacity setting to config without re-initializing the client
     try {
       const config = configHelper.loadConfig();
@@ -28,12 +33,14 @@ export class ShortcutsHelper {
       console.error('Error saving opacity to config:', error);
     }
     
+    // 如果我们使窗口可见，也确保它被显示并启用交互
     // If we're making the window visible, also make sure it's shown and interaction is enabled
     if (newOpacity > 0.1 && !this.deps.isVisible()) {
       this.deps.toggleMainWindow();
     }
   }
 
+  // 注册全局快捷键
   public registerGlobalShortcuts(): void {
     globalShortcut.register("CommandOrControl+H", async () => {
       const mainWindow = this.deps.getMainWindow()
